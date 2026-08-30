@@ -5,7 +5,7 @@ Isi folder ini:
 | File | Fungsi |
 |------|--------|
 | `index.html` | Halaman web (tabel + 6 grafik). Sudah lengkap, tidak perlu diedit tangan. |
-| `data.json` | Data 368 faktor. **File inilah yang diganti setiap ada data baru.** |
+| `data.json` | Data 371 faktor. **File inilah yang diganti setiap ada data baru.** |
 | `build-data.ps1` | Skrip yang membuat ulang `data.json` dari workbook Excel. |
 | `.nojekyll` | Penanda kecil supaya GitHub Pages menyajikan file apa adanya. |
 | `README.md` | Dokumen ini. |

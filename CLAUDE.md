@@ -19,7 +19,7 @@ copies live one level up in `../Document/` (not in git). See
 | File | Role |
 |------|------|
 | `index.html` | Entire app — inline CSS + vanilla JS, no build step, no framework, no external JS/CSS except Google Fonts. |
-| `data.json` | The 368 factor records. **This is the file swapped on every data update.** |
+| `data.json` | The 371 factor records. **This is the file swapped on every data update.** |
 | `build-data.ps1` | Regenerates `data.json` (and the fallback copy inside `index.html`) from the Excel workbook via Excel COM automation. |
 
 ## Data update workflow
@@ -42,6 +42,9 @@ collapses all whitespace runs, which also repairs multi-line cells in the workbo
   `data.json` (`cache: no-store`); opened as a bare `file://` it falls back to the
   embedded `<script id="data" type="application/json">` copy. Both paths call
   `initReview(ROWS)`. Keep the two data copies in sync — `build-data.ps1` does this.
+- **Record fields** (`build-data.ps1`): `row, date, year, operator, reg` (workbook col F,
+  Registration), `actype, occ, factor, ident, domain, discipline, element`. The table's
+  Aircraft/occurrence cell renders `actype (reg)`, e.g. `Cessna C172 (PK-APA)`.
 - **`initReview(ROWS)`** (`index.html:735`) builds everything: the domain count tiles,
   the table (with search/filter/highlight), and the six charts.
 - **Events vs. factors**: rows sharing `[date|year|operator|actype|occ]` (`evKey`/`gKey`)

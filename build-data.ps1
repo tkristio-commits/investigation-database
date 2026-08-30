@@ -13,8 +13,8 @@
       .\build-data.ps1 -Workbook "D:\path\to\Investigation Database ... .xlsx"
 
   Workbook layout it expects (sheet 1, header on row 2, data from row 3):
-      A Tanggal Peristiwa   B Tahun Peristiwa   E Operator   G Aircraft Type
-      I Occurrence Type     K Contributing Factors           L Identification
+      A Tanggal Peristiwa   B Tahun Peristiwa   E Operator   F Registration
+      G Aircraft Type       I Occurrence Type   K Contributing Factors   L Identification
       N Domains             O Disciplines       P Elements
 #>
 
@@ -70,6 +70,7 @@ try {
       date       = $date
       year       = Clean $vals.GetValue($i, 2)
       operator   = Clean $vals.GetValue($i, 5)
+      reg        = Clean $vals.GetValue($i, 6)
       actype     = Clean $vals.GetValue($i, 7)
       occ        = Clean $vals.GetValue($i, 9)
       factor     = Clean $vals.GetValue($i, 11)
