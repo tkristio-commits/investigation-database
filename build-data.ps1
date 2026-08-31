@@ -14,7 +14,8 @@
 
   Workbook layout it expects (sheet 1, header on row 2, data from row 3):
       A Tanggal Peristiwa   B Tahun Peristiwa   E Operator   F Registration
-      G Aircraft Type       I Occurrence Type   K Contributing Factors   L Identification
+      G Aircraft Type       H Location          I Occurrence Type
+      K Contributing Factors   L Identification
       N Domains             O Disciplines       P Elements
 #>
 
@@ -71,6 +72,7 @@ try {
       year       = Clean $vals.GetValue($i, 2)
       operator   = Clean $vals.GetValue($i, 5)
       reg        = Clean $vals.GetValue($i, 6)
+      location   = Clean $vals.GetValue($i, 8)
       actype     = Clean $vals.GetValue($i, 7)
       occ        = Clean $vals.GetValue($i, 9)
       factor     = Clean $vals.GetValue($i, 11)

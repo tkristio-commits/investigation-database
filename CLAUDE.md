@@ -43,8 +43,9 @@ collapses all whitespace runs, which also repairs multi-line cells in the workbo
   embedded `<script id="data" type="application/json">` copy. Both paths call
   `initReview(ROWS)`. Keep the two data copies in sync — `build-data.ps1` does this.
 - **Record fields** (`build-data.ps1`): `row, date, year, operator, reg` (workbook col F,
-  Registration), `actype, occ, factor, ident, domain, discipline, element`. The table's
-  Aircraft/occurrence cell renders `actype (reg)`, e.g. `Cessna C172 (PK-APA)`.
+  Registration), `location` (col H), `actype, occ, factor, ident, domain, discipline, element`.
+  The table's Aircraft/occurrence cell renders `actype (reg)`, e.g. `Cessna C172 (PK-APA)`;
+  Location is its own column after Operator.
 - **`initReview(ROWS)`** (`index.html:735`) builds everything: the domain count tiles,
   the table (with search/filter/highlight), and the six charts.
 - **Events vs. factors**: rows sharing `[date|year|operator|actype|occ]` (`evKey`/`gKey`)
