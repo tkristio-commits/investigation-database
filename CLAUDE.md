@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## What this is
 
-A single-page static website ("Contributing Factor Coding Review") that presents 368
+A single-page static website ("Contributing Factor Coding Review") that presents 376
 aviation accident contributing factors from the KNKT investigation database, each coded
 to the CICTT *Air Traffic Causal & Contributory Factors* taxonomy (Domain / Discipline /
 Element). It renders a filterable table plus six charts. Deployed to GitHub Pages;
@@ -19,7 +19,7 @@ copies live one level up in `../Document/` (not in git). See
 | File | Role |
 |------|------|
 | `index.html` | Entire app — inline CSS + vanilla JS, no build step, no framework, no external JS/CSS except Google Fonts. |
-| `data.json` | The 371 factor records. **This is the file swapped on every data update.** |
+| `data.json` | The 376 factor records. **This is the file swapped on every data update.** |
 | `build-data.ps1` | Regenerates `data.json` (and the fallback copy inside `index.html`) from the Excel workbook via Excel COM automation. |
 
 ## Data update workflow

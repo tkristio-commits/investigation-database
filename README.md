@@ -5,7 +5,7 @@ Isi folder ini:
 | File | Fungsi |
 |------|--------|
 | `index.html` | Halaman web (tabel + 6 grafik). Sudah lengkap, tidak perlu diedit tangan. |
-| `data.json` | Data 371 faktor. **File inilah yang diganti setiap ada data baru.** |
+| `data.json` | Data 376 faktor. **File inilah yang diganti setiap ada data baru.** |
 | `build-data.ps1` | Skrip yang membuat ulang `data.json` dari workbook Excel. |
 | `.nojekyll` | Penanda kecil supaya GitHub Pages menyajikan file apa adanya. |
 | `README.md` | Dokumen ini. |
@@ -95,10 +95,9 @@ tabel, grafik, dan semua hitungan menyesuaikan sendiri.
 
 ## Catatan
 
-- **Satu kecelakaan tampil sebagai dua pita warna** (API Banyuwangi, Cessna C172,
-  ARC, 14 Jun 2024) karena dua baris faktornya terpisah di workbook (baris 362 &
-  365). Hitungan "event" tetap menghitungnya sekali. Bila baris-baris itu
-  didekatkan di Excel, pita gandanya hilang.
+- **Baris untuk satu kecelakaan sebaiknya berurutan di workbook.** Bila baris faktor
+  dari satu kecelakaan terpisah, halaman menampilkannya sebagai dua pita warna
+  (hitungan "event" tetap sekali). Dekatkan baris-barisnya di Excel untuk menyatukan pita.
 - **Font** diambil dari Google Fonts saat online; offline otomatis memakai font
   bawaan sistem.
 - Halaman menyimpan pilihan mode terang/gelap di browser masing-masing pengunjung.
