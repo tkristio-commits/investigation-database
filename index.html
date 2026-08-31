@@ -159,6 +159,15 @@
     gap: 6px 18px;
   }
   .source b { color: var(--ink-muted); font-weight: 500; }
+  .source .src-link {
+    margin-left: auto;
+    color: var(--accent);
+    font-weight: 500;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .source .src-link:hover { text-decoration: underline; }
+  .source .src-link:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 3px; }
 
   /* ---- stat / filter tiles ---- */
   .tiles {
@@ -622,6 +631,7 @@
     <div class="source">
       <span><b>Source</b> Investigation Database &ndash; Contributing Factors Update 2026.xlsx</span>
       <span><b>Reference</b> CICTT AT C&amp;CF v1.0.1 (Aug 2014)</span>
+      <a class="src-link" href="executive-summary.html">Executive summary &rarr;</a>
     </div>
   </header>
 

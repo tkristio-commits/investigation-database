@@ -1,0 +1,724 @@
+<title>Lessons from 183 Investigations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,600&display=swap">
+<style>
+  :root {
+    --paper:      #f4f5f2;
+    --paper-edge: #eceee8;
+    --panel:      #e9ebe4;
+    --ink:        #1b2127;
+    --ink-soft:   #575f67;
+    --ink-faint:  #8c9299;
+    --accent:     #b4640f;
+    --accent-deep:#894a0c;
+    --slate:      #3f6469;
+    --rule:       #d3d6cf;
+    --track:      #dfe1da;
+    --good:       #3f6469;
+    --warn:       #b4640f;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper:      #15191c;
+      --paper-edge: #1a1f23;
+      --panel:      #1f252a;
+      --ink:        #e7e8e3;
+      --ink-soft:   #a2a8ab;
+      --ink-faint:  #767c80;
+      --accent:     #dc8a37;
+      --accent-deep:#c1701f;
+      --slate:      #6ea0a6;
+      --rule:       #2b3237;
+      --track:      #262d32;
+      --good:       #6ea0a6;
+      --warn:       #dc8a37;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper:      #15191c;
+    --paper-edge: #1a1f23;
+    --panel:      #1f252a;
+    --ink:        #e7e8e3;
+    --ink-soft:   #a2a8ab;
+    --ink-faint:  #767c80;
+    --accent:     #dc8a37;
+    --accent-deep:#c1701f;
+    --slate:      #6ea0a6;
+    --rule:       #2b3237;
+    --track:      #262d32;
+    --good:       #6ea0a6;
+    --warn:       #dc8a37;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Source Serif 4", Georgia, "Times New Roman", serif;
+    font-size: 17px;
+    line-height: 1.62;
+    font-optical-sizing: auto;
+  }
+  .sheet {
+    max-width: 812px;
+    margin: 0 auto;
+    padding: 20px 32px 80px;
+  }
+  @media (max-width: 640px) {
+    .sheet { padding: 16px 20px 60px; }
+    body { font-size: 16px; }
+  }
+
+  /* ---- language switch ---- */
+  .langbar {
+    max-width: 812px;
+    margin: 0 auto;
+    padding: 20px 32px 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px 6px;
+    flex-wrap: wrap;
+  }
+  @media (max-width: 640px) { .langbar { padding: 16px 20px 0; } }
+  .langbar .home {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--ink-faint);
+    text-decoration: none;
+  }
+  .langbar .home:hover { color: var(--accent-deep); text-decoration: underline; }
+  .langbar .home:focus-visible { outline: 2px solid var(--accent-deep); outline-offset: 2px; }
+  .langbar .switch { display: flex; gap: 6px; }
+  .langbar button {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 5px 11px;
+    border: 1px solid var(--rule);
+    background: transparent;
+    color: var(--ink-faint);
+    cursor: pointer;
+    border-radius: 2px;
+  }
+  .langbar button[aria-pressed="true"] {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .langbar button:focus-visible { outline: 2px solid var(--accent-deep); outline-offset: 2px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .langbar button { transition: background .12s, color .12s, border-color .12s; }
+  }
+
+  /* ---- typographic system ---- */
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    font-weight: 500;
+    letter-spacing: 0.13em;
+    text-transform: uppercase;
+    color: var(--accent-deep);
+    margin: 0 0 14px;
+  }
+  h1 {
+    font-family: "Barlow Semi Condensed", "Arial Narrow", sans-serif;
+    font-weight: 700;
+    font-size: clamp(2.4rem, 6vw, 3.4rem);
+    line-height: 1.02;
+    letter-spacing: -0.01em;
+    text-wrap: balance;
+    margin: 0 0 18px;
+  }
+  h2 {
+    font-family: "Barlow Semi Condensed", "Arial Narrow", sans-serif;
+    font-weight: 600;
+    font-size: 1.55rem;
+    line-height: 1.12;
+    letter-spacing: 0.005em;
+    text-wrap: balance;
+    margin: 0 0 4px;
+  }
+  h3 {
+    font-family: "Barlow Semi Condensed", "Arial Narrow", sans-serif;
+    font-weight: 600;
+    font-size: 1.08rem;
+    letter-spacing: 0.02em;
+    margin: 0 0 5px;
+  }
+  p { margin: 0 0 15px; }
+  a { color: var(--accent-deep); }
+  strong { font-weight: 600; }
+  .lede {
+    font-size: 1.18rem;
+    line-height: 1.55;
+    color: var(--ink);
+  }
+  .section-num {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--accent-deep);
+    letter-spacing: 0.08em;
+  }
+
+  /* ---- masthead ---- */
+  .masthead { margin-bottom: 30px; }
+  .rule-double {
+    border: 0;
+    border-top: 3px solid var(--ink);
+    border-bottom: 1px solid var(--ink);
+    height: 4px;
+    margin: 0 0 22px;
+  }
+  .meta-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 2px 22px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--ink-soft);
+    border-top: 1px solid var(--rule);
+    padding-top: 14px;
+    margin-top: 22px;
+  }
+  .meta-strip b {
+    color: var(--ink-faint);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 10.5px;
+    display: block;
+  }
+
+  /* ---- key figures ---- */
+  .figures {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(128px, 1fr));
+    gap: 1px;
+    background: var(--rule);
+    border: 1px solid var(--rule);
+    margin: 34px 0 40px;
+  }
+  .fig {
+    background: var(--panel);
+    padding: 18px 16px 16px;
+  }
+  .fig .n {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-weight: 600;
+    font-size: 1.85rem;
+    line-height: 1;
+    color: var(--accent);
+    font-variant-numeric: tabular-nums;
+  }
+  .fig .k {
+    display: block;
+    margin-top: 7px;
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: 0.9rem;
+    line-height: 1.2;
+    letter-spacing: 0.01em;
+    color: var(--ink-soft);
+  }
+
+  section { margin: 0 0 40px; }
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 12px;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 8px;
+    margin-bottom: 16px;
+  }
+
+  /* ---- bar chart ---- */
+  .bars { margin: 6px 0 4px; display: flex; flex-direction: column; gap: 9px; }
+  .bar-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+  .bar-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 12px;
+    font-family: "Barlow Semi Condensed", sans-serif;
+    font-size: 0.96rem;
+    letter-spacing: 0.005em;
+  }
+  .bar-label .v {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .bar-track {
+    position: relative;
+    height: 9px;
+    background: var(--track);
+  }
+  .bar-fill {
+    position: absolute;
+    inset: 0 auto 0 0;
+    background: var(--accent);
+  }
+  .bar-fill.alt { background: var(--slate); }
+
+  ul.clean { margin: 4px 0 15px; padding-left: 0; list-style: none; }
+  ul.clean li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 11px;
+  }
+  ul.clean li::before {
+    content: "";
+    position: absolute;
+    left: 2px;
+    top: 0.62em;
+    width: 7px;
+    height: 7px;
+    background: var(--accent);
+  }
+  ul.clean li.slate::before { background: var(--slate); }
+
+  /* ---- cockpit actions panel ---- */
+  .panel {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--accent);
+    padding: 24px 26px 10px;
+    margin: 18px 0 0;
+  }
+  .panel h3 {
+    color: var(--ink);
+    margin-bottom: 3px;
+  }
+  .panel .tag {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .action { margin-bottom: 18px; }
+  .action p { margin-bottom: 0; color: var(--ink-soft); font-size: 0.97rem; }
+
+  .callout {
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--slate);
+    padding: 18px 20px 6px;
+    margin: 20px 0;
+    font-size: 0.96rem;
+  }
+  .callout h3 { color: var(--slate); letter-spacing: 0.04em; }
+
+  footer {
+    margin-top: 52px;
+    border-top: 1px solid var(--ink);
+    padding-top: 16px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    line-height: 1.7;
+    color: var(--ink-faint);
+  }
+  footer p { margin: 0 0 6px; }
+
+  @media print {
+    body { background: #fff; color: #000; font-size: 11pt; }
+    .langbar { display: none; }
+    .sheet { max-width: none; padding: 0; }
+    .figures, .panel, .callout, .fig { break-inside: avoid; }
+    section { break-inside: avoid-page; }
+    footer { border-color: #000; }
+  }
+</style>
+
+<div class="langbar">
+  <a class="home" href="https://tkristio-commits.github.io/investigation-database/">&larr; <span data-doc="id">Tinjauan Coding Faktor</span><span data-doc="en" hidden>Factor Coding Review</span></a>
+  <span class="switch" role="group" aria-label="Language / Bahasa">
+    <button type="button" data-lang="id" aria-pressed="true">Bahasa</button>
+    <button type="button" data-lang="en" aria-pressed="false">English</button>
+  </span>
+</div>
+
+<!-- ============================ BAHASA INDONESIA ============================ -->
+<div class="sheet" data-doc="id">
+
+  <header class="masthead">
+    <hr class="rule-double">
+    <p class="eyebrow">Ringkasan Eksekutif &nbsp;&middot;&nbsp; untuk anggota Ikatan Pilot Indonesia</p>
+    <h1>Pelajaran dari 183 Investigasi</h1>
+    <p class="lede">Apa yang dikatakan faktor kontribusi kecelakaan dan serious incident penerbangan
+      sipil Indonesia &mdash; hasil investigasi KNKT 2007&ndash;2024 &mdash; tentang di mana risiko
+      terkonsentrasi, dan apa yang berada dalam kendali kru di kokpit.</p>
+    <div class="meta-strip">
+      <span><b>Sumber</b> Investigasi KNKT (Final Report)</span>
+      <span><b>Periode</b> 2007&ndash;2024</span>
+      <span><b>Cakupan</b> 183 kejadian &middot; 376 faktor</span>
+      <span><b>Operator</b> 85 &middot; 61 tipe pesawat</span>
+      <span><b>Taksonomi</b> CAST/ICAO AT C&amp;CF v1.0.1</span>
+      <span><b>Disusun</b> Agustus 2026</span>
+    </div>
+  </header>
+
+  <div class="figures">
+    <div class="fig"><span class="n">58%</span><span class="k">faktor bersumber pada manusia</span></div>
+    <div class="fig"><span class="n">76</span><span class="k">kejadian terkait operasi landas pacu</span></div>
+    <div class="fig"><span class="n">29</span><span class="k">kejadian CFIT</span></div>
+    <div class="fig"><span class="n">75</span><span class="k">faktor &ldquo;tindakan / kelalaian&rdquo;</span></div>
+    <div class="fig"><span class="n">38</span><span class="k">faktor pengambilan keputusan</span></div>
+  </div>
+
+  <section>
+    <p>Setiap laporan akhir KNKT menyebut satu atau lebih <em>contributing factor</em>. Ke-376 faktor
+      dari 183 investigasi telah dibaca satu per satu dan dipetakan ke struktur tiga tingkat
+      <strong>domain &rarr; disiplin &rarr; elemen</strong> milik taksonomi CAST/ICAO. Rekap di bawah
+      ini menghitung <em>seberapa sering</em> sebuah jenis faktor muncul &mdash; bukan bobot
+      penyebab &mdash; sehingga yang terlihat adalah pola yang berulang lintas maskapai, jenis
+      pesawat, dan dekade.</p>
+    <p>Satu pesan menonjol: sebagian besar rantai kejadian melewati titik-titik keputusan dan
+      penerbangan yang lazim, bukan kegagalan luar biasa. Itu kabar baik &mdash; artinya banyak
+      di antaranya dapat diputus oleh kru yang terlatih dan disiplin pada prosedur.</p>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="section-num">01</span><h2>Di mana faktor terkonsentrasi</h2></div>
+    <div class="bars">
+      <div class="bar-row"><div class="bar-label"><span>Faktor manusia / individu</span><span class="v">218 &middot; 58%</span></div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Faktor peralatan</span><span class="v">66 &middot; 18%</span></div><div class="bar-track"><div class="bar-fill" style="width:30.3%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Faktor organisasi</span><span class="v">47 &middot; 13%</span></div><div class="bar-track"><div class="bar-fill" style="width:21.6%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Lingkungan operasi</span><span class="v">37 &middot; 10%</span></div><div class="bar-track"><div class="bar-fill" style="width:17.0%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Tidak dapat ditentukan</span><span class="v">8 &middot; 2%</span></div><div class="bar-track"><div class="bar-fill" style="width:3.7%"></div></div></div>
+    </div>
+    <p style="margin-top:16px">Faktor manusia mendominasi, tetapi jarang berdiri sendiri: faktor peralatan
+      (kegagalan powerplant dan airframe) sering menjadi <em>pemicu</em>, sedangkan faktor organisasi
+      &mdash; prosedur, pelatihan, pengawasan &mdash; menentukan seberapa siap kru menghadapinya.
+      Cuaca dan infrastruktur bandara melengkapi konteksnya.</p>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="section-num">02</span><h2>Faktor manusia: pola yang berulang</h2></div>
+    <p>Dari 218 faktor manusia, <strong>123</strong> berada di disiplin
+      <em>Procedural / Task Performance</em> &mdash; pelaksanaan tugas dan kepatuhan SOP. Rinciannya:</p>
+    <div class="bars">
+      <div class="bar-row"><div class="bar-label"><span>Tindakan / kelalaian (handling, SOP)</span><span class="v">75</span></div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Pemrosesan informasi &amp; pengambilan keputusan</span><span class="v">38</span></div><div class="bar-track"><div class="bar-fill" style="width:50.7%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Koordinasi / CRM</span><span class="v">18</span></div><div class="bar-track"><div class="bar-fill" style="width:24.0%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Kesadaran situasional (perceptual)</span><span class="v">14</span></div><div class="bar-track"><div class="bar-fill alt" style="width:18.7%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Perencanaan / persiapan</span><span class="v">10</span></div><div class="bar-track"><div class="bar-fill" style="width:13.3%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Monitoring (pilot flying / pilot monitoring)</span><span class="v">7</span></div><div class="bar-track"><div class="bar-fill" style="width:9.3%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Disorientasi spasial / ilusi</span><span class="v">7</span></div><div class="bar-track"><div class="bar-fill alt" style="width:9.3%"></div></div></div>
+    </div>
+    <p style="margin-top:16px">Kelompok terbesar bukan pengetahuan yang kurang, melainkan
+      <strong>eksekusi</strong> &mdash; menyimpang dari teknik atau SOP yang sudah diketahui &mdash;
+      diikuti oleh <strong>keputusan untuk melanjutkan</strong> saat pilihan yang lebih aman
+      tersedia (mis. melanjutkan approach yang tidak stabil alih-alih go-around). Koordinasi kru dan
+      pembagian tugas yang tidak efektif adalah tema ketiga.</p>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="section-num">03</span><h2>Jenis kejadian yang paling sering</h2></div>
+    <p>Dihitung per investigasi (bukan per faktor):</p>
+    <div class="bars">
+      <div class="bar-row"><div class="bar-label"><span>Runway Excursion (RE)</span><span class="v">53</span></div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Controlled Flight into Terrain (CFIT)</span><span class="v">29</span></div><div class="bar-track"><div class="bar-fill" style="width:54.7%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Kegagalan sistem &mdash; powerplant (SCF-PP)</span><span class="v">19</span></div><div class="bar-track"><div class="bar-fill alt" style="width:35.8%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Kegagalan sistem &mdash; non-powerplant (SCF-NP)</span><span class="v">16</span></div><div class="bar-track"><div class="bar-fill alt" style="width:30.2%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Abnormal Runway Contact (ARC)</span><span class="v">15</span></div><div class="bar-track"><div class="bar-fill" style="width:28.3%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Ground Collision (GCOL)</span><span class="v">7</span></div><div class="bar-track"><div class="bar-fill" style="width:13.2%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Loss of Control &ndash; Inflight (LOC-I)</span><span class="v">4</span></div><div class="bar-track"><div class="bar-fill" style="width:7.5%"></div></div></div>
+    </div>
+    <p style="margin-top:16px"><strong>Operasi landas pacu adalah medan risiko terbesar.</strong>
+      Runway excursion, abnormal runway contact, runway incursion, dan ground collision
+      bersama-sama mencakup <strong>76 dari 183</strong> kejadian (&asymp;42%). Sebagian besar
+      berakar pada fase approach dan landing: kecepatan/energi berlebih, approach tidak stabil,
+      teknik flare, dan keputusan go-around yang tertunda.</p>
+    <div class="callout">
+      <h3>CFIT dan LOC-I &mdash; jarang, tapi konsekuensinya tertinggi</h3>
+      <p>33 kejadian gabungan. Secara global keduanya adalah kategori dengan fatalitas tertinggi
+        (ICAO / IATA). Dalam data ini CFIT sangat lekat dengan operasi ke bandara terpencil dan
+        berterain di Papua, Sulawesi, dan Kalimantan &mdash; kondisi cuaca menurun, dokumentasi
+        approach terbatas, dan hilangnya kesadaran terrain.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="section-num">04</span><h2>Apa artinya bagi Anda di kokpit</h2></div>
+    <p>Tujuh perilaku yang, menurut pola di atas, paling sering menjadi pembeda:</p>
+
+    <div class="panel">
+      <p class="tag">Prioritas berbasis frekuensi faktor</p>
+
+      <div class="action">
+        <h3>1 &nbsp; Disiplin stabilised approach &amp; go-around</h3>
+        <p>Tema tunggal yang paling berulang. Tetapkan gate dan patuhi &mdash; go-around dari
+          approach tidak stabil atau bounce yang berat bukan kegagalan, itu prosedur.</p>
+      </div>
+      <div class="action">
+        <h3>2 &nbsp; Manajemen energi saat approach &amp; landing</h3>
+        <p>Penyumbang utama runway excursion: kecepatan tinggi, touchdown jauh, pengereman
+          terlambat, dan aquaplaning di landas pacu basah. Hitung ulang landing distance
+          bila kondisi berubah.</p>
+      </div>
+      <div class="action">
+        <h3>3 &nbsp; Terrain awareness pada operasi non-precision &amp; bandara terpencil</h3>
+        <p>Patuhi MSA/MDA, jangan turun tanpa referensi visual yang sah, hormati EGPWS/TAWS tanpa
+          negosiasi. Waspadai transisi VMC ke IMC.</p>
+      </div>
+      <div class="action">
+        <h3>4 &nbsp; Keputusan &ldquo;melanjutkan vs berhenti&rdquo;</h3>
+        <p>38 faktor pengambilan keputusan. Sebagian besar adalah keputusan untuk terus &mdash;
+          diverging, hold, atau divert lebih dini sering menjadi opsi yang terlewat.</p>
+      </div>
+      <div class="action">
+        <h3>5 &nbsp; CRM: pembagian tugas &amp; assertiveness</h3>
+        <p>18 faktor koordinasi. Briefing yang eksplisit, callout yang jelas, dan kesediaan PM
+          untuk menantang PF adalah pertahanan yang murah dan efektif.</p>
+      </div>
+      <div class="action">
+        <h3>6 &nbsp; Monitoring aktif &amp; pencegahan penyimpangan otomasi</h3>
+        <p>Peran PM bukan pasif. Pantau flight path, mode, dan energi; sebut penyimpangan lebih
+          awal sebelum menjadi upset.</p>
+      </div>
+      <div class="action">
+        <h3>7 &nbsp; Kelelahan &amp; kesiapan fisik</h3>
+        <p>Muncul lebih jarang (faktor fatigue &amp; kondisi fisik) tetapi nyata, termasuk kasus
+          terkini. Gunakan rest period secara benar dan laporkan bila tidak fit.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="section-num">05</span><h2>Catatan data &amp; keterbatasan</h2></div>
+    <ul class="clean">
+      <li>Angka menghitung <strong>frekuensi kemunculan</strong> jenis faktor, bukan bobot kausal.
+        Satu kejadian berkontribusi beberapa faktor; kejadian dengan laporan panjang otomatis
+        menyumbang lebih banyak baris.</li>
+      <li>Taksonomi CAST/ICAO <em>Air Traffic Causal &amp; Contributory Factors</em> aslinya
+        ditulis untuk kejadian ATC; cabang manusia, organisasi, peralatan, dan lingkungan
+        diterapkan pada tindakan kru dan perawatan secara analogi.</li>
+      <li><strong>8 faktor</strong> berstatus <em>tidak dapat ditentukan</em> &mdash; laporan
+        ringkas atau &ldquo;NIL&rdquo; tanpa teks yang bisa dianalisis.</li>
+      <li>Cakupan terbatas pada investigasi yang telah <em>Final</em> dan terpublikasi di laman
+        KNKT. Tahun-tahun terbaru masih akan bertambah seiring laporan diterbitkan.</li>
+      <li>Kejadian dengan dua alur kausal yang sama kuat (mis. keputusan cuaca <em>plus</em>
+        kegagalan sistem) dikode ke alur yang dominan.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Basis data: <em>Investigation Database &ndash; Contributing Factors Update 2026</em>
+      &middot; sumber laporan: knkt.go.id/investigasi</p>
+    <p>Ringkasan ini bersifat edukatif untuk anggota IPI dan bukan pengganti laporan resmi KNKT,
+      AOM/SOP operator, maupun regulasi CASR.</p>
+  </footer>
+
+</div>
+
+<!-- ================================ ENGLISH ================================ -->
+<div class="sheet" data-doc="en" hidden>
+
+  <header class="masthead">
+    <hr class="rule-double">
+    <p class="eyebrow">Executive Summary &nbsp;&middot;&nbsp; for members of the Indonesian Pilots' Association (IPI)</p>
+    <h1>Lessons from 183 Investigations</h1>
+    <p class="lede">What the contributing factors of Indonesian civil-aviation accidents and serious
+      incidents &mdash; from KNKT investigations, 2007&ndash;2024 &mdash; say about where the risk
+      concentrates, and how much of it sits within the crew's control on the flight deck.</p>
+    <div class="meta-strip">
+      <span><b>Source</b> KNKT investigations (Final Reports)</span>
+      <span><b>Period</b> 2007&ndash;2024</span>
+      <span><b>Coverage</b> 183 occurrences &middot; 376 factors</span>
+      <span><b>Operators</b> 85 &middot; 61 aircraft types</span>
+      <span><b>Taxonomy</b> CAST/ICAO AT C&amp;CF v1.0.1</span>
+      <span><b>Compiled</b> August 2026</span>
+    </div>
+  </header>
+
+  <div class="figures">
+    <div class="fig"><span class="n">58%</span><span class="k">of factors trace to people</span></div>
+    <div class="fig"><span class="n">76</span><span class="k">occurrences involving runway operations</span></div>
+    <div class="fig"><span class="n">29</span><span class="k">CFIT occurrences</span></div>
+    <div class="fig"><span class="n">75</span><span class="k">&ldquo;action / inaction&rdquo; factors</span></div>
+    <div class="fig"><span class="n">38</span><span class="k">decision-making factors</span></div>
+  </div>
+
+  <section>
+    <p>Every KNKT final report names one or more <em>contributing factors</em>. All 376 factors
+      from 183 investigations have been read individually and mapped onto the three-tier
+      <strong>domain &rarr; discipline &rarr; element</strong> structure of the CAST/ICAO taxonomy.
+      The tallies below count <em>how often</em> a type of factor appears &mdash; not its causal
+      weight &mdash; so what stands out are the patterns that recur across operators, aircraft
+      types, and decades.</p>
+    <p>One message stands out: most occurrence chains ran through ordinary decision points and
+      ordinary flying, not exotic failures. That is good news &mdash; it means many of them can be
+      broken by a crew that is well trained and disciplined about procedure.</p>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="section-num">01</span><h2>Where the factors concentrate</h2></div>
+    <div class="bars">
+      <div class="bar-row"><div class="bar-label"><span>Individual / human factors</span><span class="v">218 &middot; 58%</span></div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Equipment factors</span><span class="v">66 &middot; 18%</span></div><div class="bar-track"><div class="bar-fill" style="width:30.3%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Organizational factors</span><span class="v">47 &middot; 13%</span></div><div class="bar-track"><div class="bar-fill" style="width:21.6%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Operating environment</span><span class="v">37 &middot; 10%</span></div><div class="bar-track"><div class="bar-fill" style="width:17.0%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Undetermined</span><span class="v">8 &middot; 2%</span></div><div class="bar-track"><div class="bar-fill" style="width:3.7%"></div></div></div>
+    </div>
+    <p style="margin-top:16px">Human factors dominate, but rarely stand alone: equipment factors
+      (powerplant and airframe failures) are often the <em>trigger</em>, while organizational
+      factors &mdash; procedures, training, oversight &mdash; determine how ready the crew is to
+      handle it. Weather and aerodrome infrastructure fill in the context.</p>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="section-num">02</span><h2>Human factors: the recurring patterns</h2></div>
+    <p>Of the 218 human factors, <strong>123</strong> sit in the
+      <em>Procedural / Task Performance</em> discipline &mdash; task execution and SOP compliance.
+      The breakdown:</p>
+    <div class="bars">
+      <div class="bar-row"><div class="bar-label"><span>Action / inaction (handling, SOP)</span><span class="v">75</span></div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Information processing &amp; decision making</span><span class="v">38</span></div><div class="bar-track"><div class="bar-fill" style="width:50.7%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Coordination / CRM</span><span class="v">18</span></div><div class="bar-track"><div class="bar-fill" style="width:24.0%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Situational awareness (perceptual)</span><span class="v">14</span></div><div class="bar-track"><div class="bar-fill alt" style="width:18.7%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Planning / preparation</span><span class="v">10</span></div><div class="bar-track"><div class="bar-fill" style="width:13.3%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Monitoring (pilot flying / pilot monitoring)</span><span class="v">7</span></div><div class="bar-track"><div class="bar-fill" style="width:9.3%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Spatial disorientation / illusions</span><span class="v">7</span></div><div class="bar-track"><div class="bar-fill alt" style="width:9.3%"></div></div></div>
+    </div>
+    <p style="margin-top:16px">The largest group is not missing knowledge but <strong>execution</strong>
+      &mdash; deviating from a technique or SOP that was already known &mdash; followed by the
+      <strong>decision to continue</strong> when a safer option was available (for example, pressing
+      on with an unstable approach instead of going around). Ineffective crew coordination and task
+      sharing is the third theme.</p>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="section-num">03</span><h2>The most frequent occurrence types</h2></div>
+    <p>Counted per investigation (not per factor):</p>
+    <div class="bars">
+      <div class="bar-row"><div class="bar-label"><span>Runway Excursion (RE)</span><span class="v">53</span></div><div class="bar-track"><div class="bar-fill" style="width:100%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Controlled Flight into Terrain (CFIT)</span><span class="v">29</span></div><div class="bar-track"><div class="bar-fill" style="width:54.7%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>System failure &mdash; powerplant (SCF-PP)</span><span class="v">19</span></div><div class="bar-track"><div class="bar-fill alt" style="width:35.8%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>System failure &mdash; non-powerplant (SCF-NP)</span><span class="v">16</span></div><div class="bar-track"><div class="bar-fill alt" style="width:30.2%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Abnormal Runway Contact (ARC)</span><span class="v">15</span></div><div class="bar-track"><div class="bar-fill" style="width:28.3%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Ground Collision (GCOL)</span><span class="v">7</span></div><div class="bar-track"><div class="bar-fill" style="width:13.2%"></div></div></div>
+      <div class="bar-row"><div class="bar-label"><span>Loss of Control &ndash; Inflight (LOC-I)</span><span class="v">4</span></div><div class="bar-track"><div class="bar-fill" style="width:7.5%"></div></div></div>
+    </div>
+    <p style="margin-top:16px"><strong>Runway operations are the largest field of risk.</strong>
+      Runway excursion, abnormal runway contact, runway incursion, and ground collision together
+      account for <strong>76 of 183</strong> occurrences (&asymp;42%). Most are rooted in the
+      approach and landing phase: excess speed / energy, unstable approaches, flare technique, and
+      a delayed go-around decision.</p>
+    <div class="callout">
+      <h3>CFIT and LOC-I &mdash; rare, but the highest consequence</h3>
+      <p>33 occurrences combined. Globally these are the categories with the highest fatality
+        toll (ICAO / IATA). In this data, CFIT is closely tied to operations into remote,
+        terrain-bound aerodromes in Papua, Sulawesi, and Kalimantan &mdash; deteriorating weather,
+        limited approach documentation, and a loss of terrain awareness.</p>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="section-num">04</span><h2>What this means for you on the flight deck</h2></div>
+    <p>Seven behaviours that, on the patterns above, most often make the difference:</p>
+
+    <div class="panel">
+      <p class="tag">Priorities ranked by factor frequency</p>
+
+      <div class="action">
+        <h3>1 &nbsp; Stabilised approach &amp; go-around discipline</h3>
+        <p>The single most recurring theme. Set the gate and hold to it &mdash; a go-around from
+          an unstable approach or a heavy bounce is not a failure, it is the procedure.</p>
+      </div>
+      <div class="action">
+        <h3>2 &nbsp; Energy management on approach &amp; landing</h3>
+        <p>The leading driver of runway excursions: high speed, long touchdown, late braking, and
+          aquaplaning on a wet runway. Recompute landing distance when the conditions change.</p>
+      </div>
+      <div class="action">
+        <h3>3 &nbsp; Terrain awareness on non-precision ops &amp; remote aerodromes</h3>
+        <p>Respect MSA/MDA, do not descend without a valid visual reference, and act on EGPWS/TAWS
+          without negotiation. Watch the VMC-to-IMC transition.</p>
+      </div>
+      <div class="action">
+        <h3>4 &nbsp; The &ldquo;continue vs. stop&rdquo; decision</h3>
+        <p>38 decision-making factors. Most were decisions to press on &mdash; diverting, holding,
+          or an earlier divert were often the options that were missed.</p>
+      </div>
+      <div class="action">
+        <h3>5 &nbsp; CRM: task sharing &amp; assertiveness</h3>
+        <p>18 coordination factors. An explicit briefing, clear callouts, and a PM willing to
+          challenge the PF are a cheap and effective defence.</p>
+      </div>
+      <div class="action">
+        <h3>6 &nbsp; Active monitoring &amp; automation-deviation prevention</h3>
+        <p>The PM role is not passive. Monitor flight path, mode, and energy; call the deviation
+          early, before it becomes an upset.</p>
+      </div>
+      <div class="action">
+        <h3>7 &nbsp; Fatigue &amp; physical fitness</h3>
+        <p>Appears less often (fatigue and physical-condition factors) but it is real, including
+          recent cases. Use rest periods properly and report when you are not fit to fly.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="section-num">05</span><h2>Data notes &amp; limitations</h2></div>
+    <ul class="clean">
+      <li>The numbers count the <strong>frequency of appearance</strong> of a factor type, not
+        causal weight. A single occurrence contributes several factors; occurrences with long
+        reports automatically contribute more rows.</li>
+      <li>The CAST/ICAO <em>Air Traffic Causal &amp; Contributory Factors</em> taxonomy was
+        originally written for ATC events; its human, organizational, equipment, and environment
+        branches are applied to flight-crew and maintenance actions by analogy.</li>
+      <li><strong>8 factors</strong> are marked <em>undetermined</em> &mdash; short-form or
+        &ldquo;NIL&rdquo; reports with no analysable text.</li>
+      <li>Coverage is limited to investigations that are <em>Final</em> and published on the KNKT
+        website. Recent years will still grow as reports are issued.</li>
+      <li>Occurrences with two equally strong causal threads (e.g. a weather decision <em>plus</em>
+        a system failure) are coded to the dominant one.</li>
+    </ul>
+  </section>
+
+  <footer>
+    <p>Database: <em>Investigation Database &ndash; Contributing Factors Update 2026</em>
+      &middot; report source: knkt.go.id/investigasi</p>
+    <p>This summary is educational material for IPI members and is not a substitute for the
+      official KNKT reports, the operator's AOM/SOP, or CASR regulation.</p>
+  </footer>
+
+</div>
+
+<script>
+  (function () {
+    var KEY = "execsum-lang";
+    var btns = Array.prototype.slice.call(document.querySelectorAll(".langbar .switch button"));
+    var langNodes = Array.prototype.slice.call(document.querySelectorAll("[data-doc]"));
+    function set(lang) {
+      if (lang !== "id" && lang !== "en") lang = "id";
+      langNodes.forEach(function (n) { n.hidden = n.dataset.doc !== lang; });
+      document.documentElement.lang = lang;
+      btns.forEach(function (b) {
+        b.setAttribute("aria-pressed", b.dataset.lang === lang ? "true" : "false");
+      });
+      try { localStorage.setItem(KEY, lang); } catch (e) {}
+    }
+    var saved = "id";
+    try { saved = localStorage.getItem(KEY) || "id"; } catch (e) {}
+    set(saved);
+    btns.forEach(function (b) {
+      b.addEventListener("click", function () { set(b.dataset.lang); });
+    });
+  })();
+</script>

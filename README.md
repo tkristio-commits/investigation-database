@@ -7,6 +7,7 @@ Isi folder ini:
 | `index.html` | Halaman web (tabel + 6 grafik). Sudah lengkap, tidak perlu diedit tangan. |
 | `data.json` | Data 376 faktor. **File inilah yang diganti setiap ada data baru.** |
 | `build-data.ps1` | Skrip yang membuat ulang `data.json` dari workbook Excel. |
+| `executive-summary.html` | Ringkasan eksekutif dwibahasa (tombol Bahasa / English) untuk anggota IPI. Ditaut dari halaman utama ("Executive summary →"). Angkanya diketik manual — perbarui sendiri bila data berubah. |
 | `.nojekyll` | Penanda kecil supaya GitHub Pages menyajikan file apa adanya. |
 | `README.md` | Dokumen ini. |
 
@@ -29,7 +30,7 @@ yang bisa dibuka siapa saja yang punya link.
    - klik **Create repository**
 3. Di halaman repo, klik **Add file → Upload files**, lalu tarik masuk
    **semua isi folder ini**: `index.html`, `data.json`, `build-data.ps1`,
-   `.nojekyll`, `README.md`. Klik **Commit changes**.
+   `executive-summary.html`, `.nojekyll`, `README.md`. Klik **Commit changes**.
 4. Buka **Settings → Pages** (menu kiri).
    - **Source:** *Deploy from a branch*
    - **Branch:** `main`, folder `/ (root)` → **Save**
