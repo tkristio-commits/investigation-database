@@ -1079,6 +1079,20 @@
       });
     }
 
+    // Plain substring search, except a query not itself starting with "non"
+    // skips occurrences immediately preceded by "non-"/"non " (e.g. searching
+    // "powerplant" should not pull in "Non-Powerplant" rows).
+    function hasMatch(hay, q) {
+      if (!q) return true;
+      if (q.indexOf("non") === 0) return hay.indexOf(q) !== -1;
+      var idx = -1;
+      while ((idx = hay.indexOf(q, idx + 1)) !== -1) {
+        var prefix = hay.slice(Math.max(0, idx - 4), idx);
+        if (!/non[- ]$/.test(prefix)) return true;
+      }
+      return false;
+    }
+
     function apply() {
       var q = state.q.trim().toLowerCase();
       var shown = 0;
@@ -1087,7 +1101,7 @@
       var visRows = [];
       tbody.querySelectorAll("tr").forEach(function (tr, i) {
         var okD = state.domain === "all" || tr.dataset.domain === state.domain;
-        var okQ = !q || tr.dataset.hay.indexOf(q) !== -1;
+        var okQ = hasMatch(tr.dataset.hay, q);
         var vis = okD && okQ;
         tr.style.display = vis ? "" : "none";
         tr.classList.toggle("hit", vis && !!q);
