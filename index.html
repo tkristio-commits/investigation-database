@@ -614,10 +614,12 @@
   .cc-stack span { display: block; width: 100%; }
   .cc-x { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 10px; color: var(--ink-faint); line-height: 1; }
 
-  .hm { width: 100%; border-collapse: separate; border-spacing: 2px; font-size: 12px; }
+  .hm { width: 100%; border-collapse: separate; border-spacing: 2px; font-size: 12px; table-layout: fixed; }
+  .hm col.rowc { width: 92px; }
   .hm th {
     font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 9.5px; font-weight: 500;
     color: var(--ink-faint); text-transform: uppercase; letter-spacing: 0.03em; padding: 4px 3px; text-align: center;
+    line-height: 1.3; word-break: break-word;
   }
   .hm th.rowh { text-align: right; white-space: nowrap; color: var(--ink-muted); }
   .hm td {
@@ -1118,9 +1120,10 @@
             (c || '·') + '</td>';
         }).join("") + '</tr>';
       }).join("");
+      var colgroup = '<colgroup><col class="rowc">' + DOMAIN_ORDER.map(function () { return "<col>"; }).join("") + '</colgroup>';
       return card("Identification vs coded domain",
         "cross-check · Human → Individual / Human, Technical → Equipment, …",
-        '<table class="hm">' + head + body + '</table>', true);
+        '<table class="hm">' + colgroup + head + body + '</table>', true);
     }
 
     function renderCharts(rows) {
