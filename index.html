@@ -289,7 +289,7 @@
     box-shadow: var(--shadow);
   }
 
-  table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 1060px; }
+  table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 1220px; }
 
   thead th {
     position: sticky;
@@ -432,21 +432,20 @@
   .c-op { font-size: 13px; min-width: 120px; max-width: 150px; }
   .c-loc { font-size: 12.5px; color: var(--ink-muted); min-width: 130px; max-width: 190px; }
 
-  .c-ctx { min-width: 132px; max-width: 160px; }
-  .c-ctx .ac { font-weight: 500; font-size: 13px; }
-  .c-ctx .reg {
+  .c-ac { min-width: 140px; max-width: 180px; font-weight: 500; font-size: 13px; }
+  .c-ac .reg {
     font-weight: 400;
     font-family: "IBM Plex Mono", ui-monospace, monospace;
     font-size: 11px;
     color: var(--ink-faint);
     white-space: nowrap;
   }
-  .c-ctx .occ {
-    display: block;
+  .c-occ {
+    min-width: 150px;
+    max-width: 190px;
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 11px;
+    font-size: 11.5px;
     color: var(--ink-faint);
-    margin-top: 3px;
     line-height: 1.4;
   }
 
@@ -470,13 +469,13 @@
     overflow: hidden;
   }
   tr.open .c-factor .txt { -webkit-line-clamp: unset; overflow: visible; }
-  .c-factor .ident {
-    margin-top: 6px;
+  .c-ident {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
     font-size: 10.5px;
     letter-spacing: 0.05em;
     text-transform: uppercase;
     color: var(--ink-faint);
+    min-width: 110px;
   }
 
   .chip {
@@ -683,12 +682,16 @@
     tbody td { border-bottom: 0; padding: 5px 14px; background: transparent !important; }
     tbody tr td:first-child { box-shadow: none; }
     tbody tr.g-start .c-row { box-shadow: inset 3px 0 0 var(--g-rail, var(--accent)); }
-    .c-ctx { max-width: none; }
+    .c-ac { max-width: none; }
+    .c-occ { max-width: none; }
     .c-row::before { content: "Row "; }
     .c-when { display: flex; gap: 8px; align-items: baseline; }
     .c-when .y { margin-top: 0; }
     .c-op::before { content: "Operator — "; color: var(--ink-faint); font-size: 11px; }
     .c-loc::before { content: "Location — "; color: var(--ink-faint); font-size: 11px; }
+    .c-ac::before { content: "Aircraft — "; color: var(--ink-faint); font-size: 11px; }
+    .c-occ::before { content: "Occurrence — "; color: var(--ink-faint); font-size: 11px; }
+    .c-ident::before { content: "Identification — "; color: var(--ink-faint); font-size: 11px; }
     .c-disc::before { content: "Discipline — "; color: var(--ink-faint); font-size: 11px; }
     .c-elem::before { content: "Element — "; color: var(--ink-faint); font-size: 11px; }
     .c-url::before { content: "Report — "; color: var(--ink-faint); font-size: 11px; }
@@ -766,8 +769,10 @@
           <th scope="col">Date / year <button type="button" class="colf-btn" data-col="year" title="Filter: Year">&#9662;</button></th>
           <th scope="col">Operator <button type="button" class="colf-btn" data-col="operator" title="Filter: Operator">&#9662;</button></th>
           <th scope="col">Location <button type="button" class="colf-btn" data-col="location" title="Filter: Location">&#9662;</button></th>
-          <th scope="col">Aircraft / occurrence <button type="button" class="colf-btn" data-col="actype" title="Filter: Aircraft type">AC&#9662;</button><button type="button" class="colf-btn" data-col="occ" title="Filter: Occurrence type">OCC&#9662;</button></th>
+          <th scope="col">Aircraft <button type="button" class="colf-btn" data-col="actype" title="Filter: Aircraft type">&#9662;</button></th>
+          <th scope="col">Occurrence <button type="button" class="colf-btn" data-col="occ" title="Filter: Occurrence type">&#9662;</button></th>
           <th scope="col">Contributing factor</th>
+          <th scope="col">Identification <button type="button" class="colf-btn" data-col="ident" title="Filter: Identification">&#9662;</button></th>
           <th scope="col">Domain <button type="button" class="colf-btn" data-col="domain" title="Filter: Domain">&#9662;</button></th>
           <th scope="col">Discipline <button type="button" class="colf-btn" data-col="discipline" title="Filter: Discipline">&#9662;</button></th>
           <th scope="col">Element <button type="button" class="colf-btn" data-col="element" title="Filter: Element">&#9662;</button></th>
@@ -888,20 +893,21 @@
         r.domain + " " + r.discipline + " " + r.element + " " + r.ident).toLowerCase();
       tr.dataset.hay = hay;
 
-      var identLine = r.ident ? '<span class="ident">Identification: ' + esc(r.ident) + "</span>" : "";
       var elem = r.element ? esc(r.element) : "&mdash;";
       var disc = r.discipline ? esc(r.discipline) : "&mdash;";
+      var ident = r.ident ? esc(r.ident) : "&mdash;";
 
       tr.innerHTML =
         '<td class="c-row">' + esc(no) + "</td>" +
         '<td class="c-when"><span class="d">' + esc(r.date) + '</span><span class="y">' + esc(r.year) + "</span></td>" +
         '<td class="c-op">' + esc(r.operator) + "</td>" +
         '<td class="c-loc">' + esc(r.location || "") + "</td>" +
-        '<td class="c-ctx"><span class="ac">' + esc(r.actype) +
-          (r.reg ? ' <span class="reg">(' + esc(r.reg) + ')</span>' : "") + '</span>' +
-          '<span class="occ">' + esc(r.occ) + "</span></td>" +
+        '<td class="c-ac"><span class="ac">' + esc(r.actype) +
+          (r.reg ? ' <span class="reg">(' + esc(r.reg) + ')</span>' : "") + "</span></td>" +
+        '<td class="c-occ">' + esc(r.occ) + "</td>" +
         '<td class="c-factor"><button type="button" aria-expanded="false">' +
-          '<span class="txt">' + esc(r.factor) + "</span>" + identLine + "</button></td>" +
+          '<span class="txt">' + esc(r.factor) + "</span></button></td>" +
+        '<td class="c-ident">' + ident + "</td>" +
         '<td><span class="chip ' + cls + '">' + esc(DOMAIN_SHORT[r.domain] || r.domain) + "</span></td>" +
         '<td class="c-disc">' + disc + "</td>" +
         '<td class="c-elem">' + elem + "</td>" +
@@ -1198,7 +1204,8 @@
           colOk("occ", r.occ) &&
           (!state.col.domain || state.col.domain.has(tr.dataset.domain)) &&
           colOk("discipline", r.discipline) &&
-          colOk("element", r.element);
+          colOk("element", r.element) &&
+          colOk("ident", r.ident);
         var vis = okQ && okCol;
         tr.style.display = vis ? "" : "none";
         tr.classList.toggle("hit", vis && !!q);
@@ -1268,12 +1275,13 @@
       occ:        { label: "Occurrence type", get: function (r) { return r.occ; } },
       domain:     { label: "Domain",          get: function (r) { return r.domain; }, fmt: function (v) { return DOMAIN_SHORT[v] || v; } },
       discipline: { label: "Discipline",      get: function (r) { return r.discipline; } },
-      element:    { label: "Element",         get: function (r) { return r.element; } }
+      element:    { label: "Element",         get: function (r) { return r.element; } },
+      ident:      { label: "Identification",  get: function (r) { return r.ident; } }
     };
     function fmtVal(key, v) {
       var f = FILTERABLE[key].fmt;
       if (f) return f(v);
-      return v ? v : "(Undetermined)";
+      return v ? v : "(blank)";
     }
     var cfCache = {};
     function buildOptions(key) {
