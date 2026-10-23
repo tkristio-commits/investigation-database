@@ -309,6 +309,82 @@
     white-space: nowrap;
   }
 
+  thead th .colf-btn {
+    all: unset;
+    cursor: pointer;
+    margin-left: 4px;
+    padding: 1px 4px;
+    font-size: 9.5px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    letter-spacing: 0;
+    color: var(--ink-faint);
+    border: 1px solid transparent;
+    border-radius: 3px;
+    vertical-align: middle;
+  }
+  thead th .colf-btn:hover { color: var(--ink); background: var(--surface); }
+  thead th .colf-btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+  thead th .colf-btn.active { color: #fff; background: var(--accent); border-color: var(--accent); }
+
+  .cf-panel {
+    position: fixed;
+    z-index: 50;
+    width: 260px;
+    max-width: calc(100vw - 16px);
+    background: var(--surface);
+    border: 1px solid var(--hairline-strong);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    font-family: "Archivo", ui-sans-serif, sans-serif;
+    font-size: 13px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  .cf-panel .cf-head { padding: 8px; border-bottom: 1px solid var(--hairline); }
+  .cf-panel .cf-search {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px 8px;
+    border: 1px solid var(--hairline-strong);
+    border-radius: 6px;
+    background: var(--surface-2);
+    color: var(--ink);
+    font: inherit;
+  }
+  .cf-panel .cf-search:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+  .cf-panel .cf-opt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 10px;
+    cursor: pointer;
+    font-weight: 400;
+  }
+  .cf-panel .cf-opt:hover { background: var(--surface-2); }
+  .cf-panel .cf-opt.cf-all { border-bottom: 1px solid var(--hairline); font-weight: 600; }
+  .cf-panel .cf-opt span:first-of-type { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .cf-panel .cf-cnt { color: var(--ink-faint); font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 11px; }
+  .cf-panel .cf-list { max-height: 260px; overflow-y: auto; }
+  .cf-panel .cf-foot {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    padding: 8px;
+    border-top: 1px solid var(--hairline);
+  }
+  .cf-panel .cf-foot button {
+    font: inherit;
+    font-size: 12px;
+    padding: 5px 10px;
+    border: 1px solid var(--hairline-strong);
+    border-radius: 6px;
+    background: var(--surface-2);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  .cf-panel .cf-foot button:hover { border-color: var(--accent); color: var(--accent); }
+
   tbody td {
     padding: 12px 14px;
     border-bottom: 1px solid var(--hairline);
@@ -687,14 +763,14 @@
       <thead>
         <tr>
           <th scope="col">Row</th>
-          <th scope="col">Date / year</th>
-          <th scope="col">Operator</th>
-          <th scope="col">Location</th>
-          <th scope="col">Aircraft / occurrence</th>
+          <th scope="col">Date / year <button type="button" class="colf-btn" data-col="year" title="Filter: Year">&#9662;</button></th>
+          <th scope="col">Operator <button type="button" class="colf-btn" data-col="operator" title="Filter: Operator">&#9662;</button></th>
+          <th scope="col">Location <button type="button" class="colf-btn" data-col="location" title="Filter: Location">&#9662;</button></th>
+          <th scope="col">Aircraft / occurrence <button type="button" class="colf-btn" data-col="actype" title="Filter: Aircraft type">AC&#9662;</button><button type="button" class="colf-btn" data-col="occ" title="Filter: Occurrence type">OCC&#9662;</button></th>
           <th scope="col">Contributing factor</th>
-          <th scope="col">Domain</th>
-          <th scope="col">Discipline</th>
-          <th scope="col">Element</th>
+          <th scope="col">Domain <button type="button" class="colf-btn" data-col="domain" title="Filter: Domain">&#9662;</button></th>
+          <th scope="col">Discipline <button type="button" class="colf-btn" data-col="discipline" title="Filter: Discipline">&#9662;</button></th>
+          <th scope="col">Element <button type="button" class="colf-btn" data-col="element" title="Filter: Element">&#9662;</button></th>
           <th scope="col">Report</th>
         </tr>
       </thead>
@@ -776,7 +852,7 @@
     var clearEl = document.getElementById("clear");
     var tiles = Array.prototype.slice.call(document.querySelectorAll(".tile"));
 
-    var state = { domain: "all", q: "" };
+    var state = { q: "", col: {} };
 
     function esc(s) {
       return String(s).replace(/[&<>"]/g, function (c) {
@@ -1056,8 +1132,8 @@
     }
 
     function setDomain(dom) {
-      state.domain = dom;
-      tiles.forEach(function (x) { x.setAttribute("aria-pressed", x.dataset.domain === dom ? "true" : "false"); });
+      state.col.domain = dom === "all" ? null : new Set([dom]);
+      syncTiles();
       apply();
     }
 
@@ -1099,6 +1175,12 @@
       return false;
     }
 
+    function colOk(key, val) {
+      var f = state.col[key];
+      if (!f) return true;
+      return f.has(val === undefined || val === null ? "" : String(val));
+    }
+
     function apply() {
       var q = state.q.trim().toLowerCase();
       var shown = 0;
@@ -1106,14 +1188,23 @@
       var groupsSeen = {};
       var visRows = [];
       tbody.querySelectorAll("tr").forEach(function (tr, i) {
-        var okD = state.domain === "all" || tr.dataset.domain === state.domain;
+        var r = ROWS[i];
         var okQ = hasMatch(tr.dataset.hay, q);
-        var vis = okD && okQ;
+        var okCol =
+          colOk("year", r.year) &&
+          colOk("operator", r.operator) &&
+          colOk("location", r.location) &&
+          colOk("actype", r.actype) &&
+          colOk("occ", r.occ) &&
+          (!state.col.domain || state.col.domain.has(tr.dataset.domain)) &&
+          colOk("discipline", r.discipline) &&
+          colOk("element", r.element);
+        var vis = okQ && okCol;
         tr.style.display = vis ? "" : "none";
         tr.classList.toggle("hit", vis && !!q);
         if (vis) {
           shown++;
-          visRows.push(ROWS[i]);
+          visRows.push(r);
           var g = tr.dataset.group;
           groupsSeen[tr.dataset.gkey] = 1;
           tr.classList.toggle("g-start", g !== prevVisGroup);
@@ -1127,15 +1218,29 @@
         : shown + " of " + ROWS.length + " factors";
       countEl.textContent = base + " · " + ng + (ng === 1 ? " event" : " events");
       emptyEl.hidden = shown !== 0;
-      var filtered = state.domain !== "all" || !!q;
+      var colActive = Object.keys(state.col).some(function (k) { return !!state.col[k]; });
+      var filtered = colActive || !!q;
       clearEl.hidden = !filtered;
+      document.querySelectorAll(".colf-btn").forEach(function (b) {
+        b.classList.toggle("active", !!state.col[b.dataset.col]);
+      });
       renderCharts(visRows);
+    }
+
+    function syncTiles() {
+      var d = state.col.domain;
+      tiles.forEach(function (x) {
+        var dom = x.dataset.domain;
+        var pressed = dom === "all" ? !d : !!(d && d.size === 1 && d.has(dom));
+        x.setAttribute("aria-pressed", pressed ? "true" : "false");
+      });
     }
 
     tiles.forEach(function (t) {
       t.addEventListener("click", function () {
-        state.domain = t.dataset.domain;
-        tiles.forEach(function (x) { x.setAttribute("aria-pressed", x === t ? "true" : "false"); });
+        var d = t.dataset.domain;
+        state.col.domain = d === "all" ? null : new Set([d]);
+        syncTiles();
         apply();
       });
     });
@@ -1147,11 +1252,148 @@
     });
 
     clearEl.addEventListener("click", function () {
-      state.domain = "all"; state.q = ""; qEl.value = "";
-      tiles.forEach(function (x) { x.setAttribute("aria-pressed", x.dataset.domain === "all" ? "true" : "false"); });
+      state.col = {}; state.q = ""; qEl.value = "";
+      syncTiles();
+      closeFilterPanel();
       apply();
       qEl.focus();
     });
+
+    // ---- per-column Excel-style AutoFilter (dropdown with checkbox values) ----
+    var FILTERABLE = {
+      year:       { label: "Year",            get: function (r) { return r.year; } },
+      operator:   { label: "Operator",        get: function (r) { return r.operator; } },
+      location:   { label: "Location",        get: function (r) { return r.location; } },
+      actype:     { label: "Aircraft type",   get: function (r) { return r.actype; } },
+      occ:        { label: "Occurrence type", get: function (r) { return r.occ; } },
+      domain:     { label: "Domain",          get: function (r) { return r.domain; }, fmt: function (v) { return DOMAIN_SHORT[v] || v; } },
+      discipline: { label: "Discipline",      get: function (r) { return r.discipline; } },
+      element:    { label: "Element",         get: function (r) { return r.element; } }
+    };
+    function fmtVal(key, v) {
+      var f = FILTERABLE[key].fmt;
+      if (f) return f(v);
+      return v ? v : "(Undetermined)";
+    }
+    var cfCache = {};
+    function buildOptions(key) {
+      if (cfCache[key]) return cfCache[key];
+      var counts = Object.create(null);
+      ROWS.forEach(function (r) {
+        var v = FILTERABLE[key].get(r);
+        v = v === undefined || v === null ? "" : String(v);
+        counts[v] = (counts[v] || 0) + 1;
+      });
+      var opts = Object.keys(counts).map(function (v) {
+        return { value: v, label: fmtVal(key, v), count: counts[v] };
+      });
+      opts.sort(function (a, b) {
+        if (key === "year") return (+a.value) - (+b.value);
+        return a.label.localeCompare(b.label);
+      });
+      cfCache[key] = opts;
+      return opts;
+    }
+
+    var cfPanel = null, cfPanelKey = null;
+    function closeFilterPanel() {
+      if (cfPanel) { cfPanel.remove(); cfPanel = null; cfPanelKey = null; }
+    }
+
+    function openFilterPanel(btn, key) {
+      if (cfPanelKey === key) { closeFilterPanel(); return; }
+      closeFilterPanel();
+      var opts = buildOptions(key);
+      var panel = document.createElement("div");
+      panel.className = "cf-panel";
+      panel.setAttribute("role", "dialog");
+      panel.innerHTML =
+        '<div class="cf-head"><input type="text" class="cf-search" placeholder="Search ' + esc(FILTERABLE[key].label) + '…" /></div>' +
+        '<label class="cf-opt cf-all"><input type="checkbox" class="cf-selall"><span>(Select all)</span></label>' +
+        '<div class="cf-list"></div>' +
+        '<div class="cf-foot"><button type="button" class="cf-clear">Clear filter</button><button type="button" class="cf-close">Close</button></div>';
+      document.body.appendChild(panel);
+
+      var listEl = panel.querySelector(".cf-list");
+      var searchEl = panel.querySelector(".cf-search");
+      var selAllEl = panel.querySelector(".cf-selall");
+
+      function isChecked(v) {
+        var f = state.col[key];
+        return !f || f.has(v);
+      }
+      function renderList(term) {
+        term = (term || "").toLowerCase();
+        listEl.innerHTML = "";
+        var shownOpts = opts.filter(function (o) { return !term || o.label.toLowerCase().indexOf(term) !== -1; });
+        shownOpts.forEach(function (o) {
+          var lab = document.createElement("label");
+          lab.className = "cf-opt";
+          lab.innerHTML = '<input type="checkbox"' + (isChecked(o.value) ? " checked" : "") + '><span>' + esc(o.label) + '</span><span class="cf-cnt">' + o.count + '</span>';
+          lab.querySelector("input").addEventListener("change", function (e) {
+            var cur = state.col[key] ? new Set(state.col[key]) : new Set(opts.map(function (o2) { return o2.value; }));
+            if (e.target.checked) cur.add(o.value); else cur.delete(o.value);
+            state.col[key] = cur.size === opts.length ? null : cur;
+            if (key === "domain") syncTiles();
+            apply();
+            selAllEl.checked = shownOpts.every(function (o2) { return isChecked(o2.value); });
+          });
+          listEl.appendChild(lab);
+        });
+        selAllEl.checked = shownOpts.every(function (o2) { return isChecked(o2.value); });
+      }
+      selAllEl.addEventListener("change", function () {
+        var term = searchEl.value.toLowerCase();
+        var shownVals = opts.filter(function (o) { return !term || o.label.toLowerCase().indexOf(term) !== -1; }).map(function (o) { return o.value; });
+        var cur = state.col[key] ? new Set(state.col[key]) : new Set(opts.map(function (o) { return o.value; }));
+        shownVals.forEach(function (v) { if (selAllEl.checked) cur.add(v); else cur.delete(v); });
+        state.col[key] = cur.size === opts.length ? null : cur;
+        if (key === "domain") syncTiles();
+        apply();
+        renderList(searchEl.value);
+      });
+      searchEl.addEventListener("input", function () { renderList(searchEl.value); });
+      panel.querySelector(".cf-clear").addEventListener("click", function () {
+        state.col[key] = null;
+        if (key === "domain") syncTiles();
+        closeFilterPanel();
+        apply();
+      });
+      panel.querySelector(".cf-close").addEventListener("click", closeFilterPanel);
+
+      renderList("");
+
+      var r = btn.getBoundingClientRect();
+      var pw = 260;
+      var left = Math.min(r.left, window.innerWidth - pw - 10);
+      left = Math.max(8, left);
+      var top = Math.min(r.bottom + 4, window.innerHeight - 120);
+      panel.style.left = left + "px";
+      panel.style.top = top + "px";
+
+      cfPanel = panel; cfPanelKey = key;
+      setTimeout(function () { searchEl.focus(); }, 0);
+    }
+
+    document.querySelectorAll(".colf-btn").forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.stopPropagation();
+        openFilterPanel(btn, btn.dataset.col);
+      });
+    });
+    document.addEventListener("mousedown", function (e) {
+      if (!cfPanel) return;
+      if (cfPanel.contains(e.target)) return;
+      if (e.target.closest && e.target.closest(".colf-btn")) return;
+      closeFilterPanel();
+    });
+    document.addEventListener("keydown", function (e) {
+      if (e.key === "Escape") closeFilterPanel();
+    });
+    var tableScrollEl = document.querySelector(".table-scroll");
+    if (tableScrollEl) tableScrollEl.addEventListener("scroll", closeFilterPanel, { passive: true });
+    window.addEventListener("scroll", closeFilterPanel, { passive: true });
+    window.addEventListener("resize", closeFilterPanel);
 
     // ---- theme toggle (light / dark, remembers the choice) ----
     (function () {
