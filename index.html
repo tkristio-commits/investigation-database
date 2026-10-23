@@ -432,13 +432,16 @@
   .c-op { font-size: 13px; min-width: 120px; max-width: 150px; }
   .c-loc { font-size: 13px; color: var(--ink); min-width: 130px; max-width: 190px; }
 
-  .c-ac { min-width: 140px; max-width: 180px; font-weight: 500; font-size: 13px; }
+  .c-ac { min-width: 140px; max-width: 180px; }
+  .c-ac .ac { display: block; font-weight: 500; font-size: 13px; color: var(--ink); }
   .c-ac .reg {
+    display: block;
     font-weight: 500;
     font-family: "IBM Plex Mono", ui-monospace, monospace;
     font-size: 12px;
     color: var(--ink-muted);
     white-space: nowrap;
+    margin-top: 3px;
   }
   .c-occ {
     min-width: 150px;
@@ -913,8 +916,8 @@
         '<td class="c-when"><span class="d">' + esc(r.date) + '</span><span class="y">' + esc(r.year) + "</span></td>" +
         '<td class="c-op">' + esc(r.operator) + "</td>" +
         '<td class="c-loc">' + esc(r.location || "") + "</td>" +
-        '<td class="c-ac"><span class="ac">' + esc(r.actype) +
-          (r.reg ? ' <span class="reg">(' + esc(r.reg) + ')</span>' : "") + "</span></td>" +
+        '<td class="c-ac"><span class="ac">' + esc(r.actype) + "</span>" +
+          (r.reg ? '<span class="reg">' + esc(r.reg) + "</span>" : "") + "</td>" +
         '<td class="c-occ">' + esc(r.occ) + "</td>" +
         '<td class="c-factor"><button type="button" aria-expanded="false">' +
           '<span class="txt">' + esc(r.factor) + "</span></button></td>" +
