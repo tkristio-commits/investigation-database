@@ -430,7 +430,7 @@
   }
 
   .c-op { font-size: 13px; min-width: 120px; max-width: 150px; }
-  .c-loc { font-size: 12.5px; color: var(--ink-muted); min-width: 130px; max-width: 190px; }
+  .c-loc { font-size: 13px; color: var(--ink); min-width: 130px; max-width: 190px; }
 
   .c-ac { min-width: 140px; max-width: 180px; font-weight: 500; font-size: 13px; }
   .c-ac .reg {
@@ -444,8 +444,9 @@
     min-width: 150px;
     max-width: 190px;
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 11.5px;
-    color: var(--ink-faint);
+    font-size: 12.5px;
+    font-weight: 500;
+    color: var(--ink-muted);
     line-height: 1.4;
   }
 
@@ -471,10 +472,11 @@
   tr.open .c-factor .txt { -webkit-line-clamp: unset; overflow: visible; }
   .c-ident {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 10.5px;
+    font-size: 11.5px;
+    font-weight: 600;
     letter-spacing: 0.05em;
     text-transform: uppercase;
-    color: var(--ink-faint);
+    color: var(--ink-muted);
     min-width: 110px;
   }
 
@@ -496,7 +498,7 @@
   .chip.und { color: var(--d-und); background: var(--d-und-bg); border-color: color-mix(in srgb, var(--d-und) 30%, transparent); }
 
   .c-disc { font-size: 13px; min-width: 150px; }
-  .c-elem { font-size: 13px; color: var(--ink-muted); min-width: 150px; }
+  .c-elem { font-size: 13px; color: var(--ink); min-width: 150px; }
   .c-url { font-size: 13px; white-space: nowrap; }
   .c-url a { color: var(--accent); text-decoration: none; }
   .c-url a:hover { text-decoration: underline; }
