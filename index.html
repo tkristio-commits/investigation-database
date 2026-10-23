@@ -615,7 +615,7 @@
     .c-loc::before { content: "Location — "; color: var(--ink-faint); font-size: 11px; }
     .c-disc::before { content: "Discipline — "; color: var(--ink-faint); font-size: 11px; }
     .c-elem::before { content: "Element — "; color: var(--ink-faint); font-size: 11px; }
-    .c-url::before { content: "Laporan — "; color: var(--ink-faint); font-size: 11px; }
+    .c-url::before { content: "Report — "; color: var(--ink-faint); font-size: 11px; }
   }
 </style>
 
@@ -695,7 +695,7 @@
           <th scope="col">Domain</th>
           <th scope="col">Discipline</th>
           <th scope="col">Element</th>
-          <th scope="col">Laporan</th>
+          <th scope="col">Report</th>
         </tr>
       </thead>
       <tbody id="tbody"></tbody>
@@ -829,7 +829,7 @@
         '<td><span class="chip ' + cls + '">' + esc(DOMAIN_SHORT[r.domain] || r.domain) + "</span></td>" +
         '<td class="c-disc">' + disc + "</td>" +
         '<td class="c-elem">' + elem + "</td>" +
-        '<td class="c-url">' + (r.url ? '<a href="' + esc(r.url) + '" target="_blank" rel="noopener">Laporan \u2197</a>' : "&mdash;") + "</td>";
+        '<td class="c-url">' + (r.url ? '<a href="' + esc(r.url) + '" target="_blank" rel="noopener">Report \u2197</a>' : "&mdash;") + "</td>";
 
       tbody.appendChild(tr);
     });
