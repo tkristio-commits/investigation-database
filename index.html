@@ -614,7 +614,8 @@
   .cc-stack span { display: block; width: 100%; }
   .cc-x { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 10px; color: var(--ink-faint); line-height: 1; }
 
-  .hm { width: 100%; border-collapse: separate; border-spacing: 2px; font-size: 12px; table-layout: fixed; }
+  .hm-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .hm { width: 100%; min-width: 0; border-collapse: separate; border-spacing: 2px; font-size: 12px; table-layout: fixed; }
   .hm col.rowc { width: 92px; }
   .hm th {
     font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 9.5px; font-weight: 500;
@@ -675,6 +676,12 @@
     thead { display: none; }
     table, tbody, tr, td { display: block; width: 100%; min-width: 0; }
     table { min-width: 0; }
+    .hm-wrap { margin: 0 -2px; }
+    table.hm { display: table; table-layout: auto; width: max-content; min-width: 100%; }
+    .hm tbody { display: table-row-group; }
+    .hm tr { display: table-row; width: auto; }
+    .hm th, .hm td { display: table-cell; width: auto; min-width: 68px; }
+    .hm col.rowc { width: 78px; }
     tbody tr { border-bottom: 1px dashed var(--hairline); padding: 6px 0; }
     tbody tr.g-start { border-top: 2px solid var(--hairline-strong); margin-top: 6px; padding-top: 12px; }
     tbody tr:first-child { border-top: 0; margin-top: 0; padding-top: 6px; }
@@ -1123,7 +1130,7 @@
       var colgroup = '<colgroup><col class="rowc">' + DOMAIN_ORDER.map(function () { return "<col>"; }).join("") + '</colgroup>';
       return card("Identification vs coded domain",
         "cross-check · Human → Individual / Human, Technical → Equipment, …",
-        '<table class="hm">' + colgroup + head + body + '</table>', true);
+        '<div class="hm-wrap"><table class="hm">' + colgroup + head + body + '</table></div>', true);
     }
 
     function renderCharts(rows) {
