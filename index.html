@@ -1112,9 +1112,9 @@
         return '<th>' + esc(DOMAIN_SHORT[d]) + '</th>';
       }).join("") + '</tr>';
       var body = idr.map(function (id) {
-        return '<tr><th class="rowh">' + esc(id || "—") + '</th>' + DOMAIN_ORDER.map(function (dom) {
+        return '<tr><th class="rowh">' + esc(id || "(none)") + '</th>' + DOMAIN_ORDER.map(function (dom) {
           var c = grid[id][dom];
-          var mix = maxCell ? Math.round(10 + (c / maxCell) * 62) : 0;
+          var mix = maxCell ? Math.round(10 + Math.sqrt(c / maxCell) * 62) : 0;
           var st = c ? ' style="background:color-mix(in srgb, var(' + DOMAIN_VAR[dom] + ') ' + mix + '%, var(--surface))"' : '';
           return '<td class="' + (c ? '' : 'z') + '"' + (c ? ' data-domain="' + esc(dom) + '"' : '') + st + '>' +
             (c || '·') + '</td>';
